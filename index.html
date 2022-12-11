@@ -1,0 +1,63 @@
+<!-- HTML for file input form -->
+<form>
+  <label for="file-input">Choose a file:</label>
+  <input type="file" id="file-input" name="file-input" />
+  <button type="button" onclick="calculateHash()">Calculate Hash</button>
+</form>
+
+<!-- HTML element to display the calculated hash -->
+<p id="hash-output"></p>
+
+<script>
+  // Function to calculate the hash of the selected file
+  async function calculateHash() {
+    // Get the file input element
+    const fileInput = document.getElementById('file-input');
+
+    // Check if a file has been selected
+    if (fileInput.files.length === 0) {
+      alert('Please select a file to calculate the hash for.');
+      return;
+    }
+
+    // Get the selected file
+    const file = fileInput.files[0];
+
+    // Create a new FileReader to read the file
+    const reader = new FileReader();
+
+    // Calculate the hash when the file has been read
+    reader.onload = async () => {
+      // Get the file content
+      const fileContent = reader.result;
+
+      // Convert the file content to an ArrayBuffer
+      const arrayBuffer = new Uint8Array(fileContent).buffer;
+
+      // Import the hash algorithm to use
+      const algorithm = 'SHA-256';
+      const importedHashAlgorithm = await crypto.subtle.importKey(
+        'raw',
+        new Uint8Array(arrayBuffer),
+        { name: algorithm },
+        false,
+        ['hash']
+      );
+
+      // Calculate the hash of the file content
+      const hash = await crypto.subtle.digest(algorithm, importedHashAlgorithm);
+
+      // Convert the hash to a hexadecimal string
+      const hexHash = Array.from(new Uint8Array(hash))
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
+
+      // Get the output element and set its text to the calculated hash
+      const output = document.getElementById('hash-output');
+      output.innerText = 'Hash: ' + hexHash;
+    }
+
+    // Read the file as a binary string
+    reader.readAsArrayBuffer(file);
+  }
+</script>
