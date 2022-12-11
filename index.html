@@ -1,51 +1,36 @@
-<!-- HTML for file input form -->
-<form>
-  <label for="file-input">Choose a file:</label>
-  <input type="file" id="file-input" name="file-input" />
-  <button type="button" onclick="calculateHash()">Calculate Hash</button>
-</form>
+<!doctype html>
+<html>
+  <head>
+    <title>MD5 Hash Calculator</title>
+  </head>
+  <body>
+    <h1>MD5 Hash Calculator</h1>
+    <p>Select a file to calculate its MD5 hash:</p>
+    <input type="file" id="file-input" />
+    <pre id="output"></pre>
+    
+    <script>
+      const fileInput = document.getElementById('file-input');
+      const output = document.getElementById('output');
 
-<!-- HTML element to display the calculated hash -->
-<p id="hash-output"></p>
+      fileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
 
-<script>
-  // Function to calculate the hash of the selected file
-  async function calculateHash() {
-    // Get the file input element
-    const fileInput = document.getElementById('file-input');
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            // Convert the file data to a typed array
+            const data = new Uint8Array(event.target.result);
 
-    // Check if a file has been selected
-    if (fileInput.files.length === 0) {
-      alert('Please select a file to calculate the hash for.');
-      return;
-    }
+            // Calculate the MD5 hash of the file data
+            const hash = md5(data);
 
-    // Get the selected file
-    const file = fileInput.files[0];
-
-    // Create a new FileReader to read the file
-    const reader = new FileReader();
-
-    // Calculate the hash when the file has been read
-    reader.onload = async () => {
-      // Get the file content
-      const fileData = reader.result;
-
-      // Use the Crypto API to create a hash of the file data
-      const hash = crypto.subtle.digest('SHA-1', fileData);
-     
-      // Convert the hash to a hexadecimal string
-      const hexHash = Array.from(new Uint8Array(hash))
-        .map(b => b.toString(16).padStart(2, '0'))
-        .join('');
-
-      // Get the output element and set its text to the calculated hash
-      const output = document.getElementById('hash-output');
-      output.innerText = 'Hash: ' + hexHash;
-      console.log(hexHash);
-    }
-
-    // Read the file as a binary string
-    reader.readAsArrayBuffer(file);
-  }
-</script>
+            // Display the hash in the output element
+            output.innerText = hash;
+          };
+          reader.readAsArrayBuffer(file);
+        }
+      });
+    </script>
+  </body>
+</html>
