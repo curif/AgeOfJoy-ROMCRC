@@ -33,9 +33,6 @@
 
       // Use the Crypto API to create a hash of the file data
       const hash = crypto.subtle.digest('SHA-1', fileData);
-
-      // Print the hash to the screen
-      console.log(hash);
      
       // Convert the hash to a hexadecimal string
       const hexHash = Array.from(new Uint8Array(hash))
@@ -45,6 +42,7 @@
       // Get the output element and set its text to the calculated hash
       const output = document.getElementById('hash-output');
       output.innerText = 'Hash: ' + hexHash;
+      console.log(hexHash);
     }
 
     // Read the file as a binary string
