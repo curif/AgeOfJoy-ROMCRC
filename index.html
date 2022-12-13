@@ -5,40 +5,32 @@
     <title>MD5 Hash Calculator</title>
   </head>
   <body>
-    <script src="md5.js"></script>
     <a>
       <img src="CRC Checking tool.png"  width="100%"
            alt="CRC Checking tool banner">
     </a>
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+
     <h1>Age of Joy - MD5 Hash Calculator</h1>
     <p>Select a file ROM to calculate its MD5 hash:</p>
     <input type="file" id="file-input" />
     <pre id="output"></pre>
-    
     <script>
-      const crypto = require('crypto'); // Import the crypto module
-      const fileInput = document.getElementById('file-input');
-      const output = document.getElementById('output');
+      	var input = document.getElementById('file-input');
+  	var output = document.getElementById('output');
 
-      fileInput.addEventListener('change', (event) => {
-        const file = event.target.files[0];
-
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = (event) => {
-            // Convert the file data to a typed array
-            const data = new Uint8Array(event.target.result);
-
-            // Calculate the MD5 hash of the file data
-            const hash = md5(data);
-
-            // Display the hash in the output element
-            output.innerText = "Hash: " + hash;
-          };
-          reader.readAsArrayBuffer(file);
-        }
-      });
-    </script>
+  	input.addEventListener('change', function() {
+    		var reader = new FileReader();
+    		var file = input.files[0];
+    		reader.onload = function() {
+      			var data = reader.result;
+      			var hash = CryptoJS.MD5(CryptoJS.enc.Latin1.parse(data)).toString();
+      			output.innerText = hash + "\nSize: " + file.size;
+    		};
+    		//reader.readAsArrayBuffer(input.files[0]);
+    		reader.readAsBinaryString(file);
+  	});
+   </script>
   </body>
 </html>
